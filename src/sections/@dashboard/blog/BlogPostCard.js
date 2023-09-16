@@ -91,7 +91,7 @@ export default function BlogPostCard({ post, index }) {
             }),
           }}
         >
-          <SvgColor
+          {/* <SvgColor
             color="paper"
             src="/assets/icons/shape-avatar.svg"
             sx={{
@@ -103,8 +103,8 @@ export default function BlogPostCard({ post, index }) {
               color: 'background.paper',
               ...((latestPostLarge || latestPost) && { display: 'none' }),
             }}
-          />
-          <StyledAvatar
+          /> */}
+          {/* <StyledAvatar
             alt={author.name}
             src={author.avatarUrl}
             sx={{
@@ -116,7 +116,7 @@ export default function BlogPostCard({ post, index }) {
                 height: 40,
               }),
             }}
-          />
+          /> */}
 
           <StyledCover alt={title} src={cover} />
         </StyledCardMedia>

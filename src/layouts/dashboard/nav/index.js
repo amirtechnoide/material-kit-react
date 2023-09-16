@@ -16,7 +16,7 @@ import NavSection from '../../../components/nav-section';
 import navConfig from './config';
 
 // ----------------------------------------------------------------------
-
+// const logoutLogo = '/assets/icons/ic_flag_en.svg';
 const NAV_WIDTH = 280;
 
 const StyledAccount = styled('div')(({ theme }) => ({
@@ -81,7 +81,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
+          {/* <Box
             component="img"
             src="/assets/illustrations/illustration_avatar.png"
             sx={{ width: 100, position: 'absolute', top: -50 }}
@@ -95,10 +95,10 @@ export default function Nav({ openNav, onCloseNav }) {
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               From only $69
             </Typography>
-          </Box>
+          </Box> */}
 
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
+          <Button variant="contained">
+            Logout
           </Button>
         </Stack>
       </Box>
