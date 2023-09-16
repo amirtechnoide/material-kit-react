@@ -1,4 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
@@ -8,7 +10,7 @@ import useResponsive from '../hooks/useResponsive';
 import Logo from '../components/logo';
 import Iconify from '../components/iconify';
 // sections
-import { LoginForm } from '../sections/auth/login';
+import { LoginForm } from '../sections/auth/login/components/index';
 
 // ----------------------------------------------------------------------
 
@@ -46,9 +48,9 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Login | Benno Bokk Yaakaar </title>
       </Helmet>
-
+      <ToastContainer />
       <StyledRoot>
         <Logo
           sx={{
@@ -74,8 +76,7 @@ export default function LoginPage() {
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 5 }}>
-              This is the admin panel. {''}
-              <Link variant="subtitle2">More info</Link>
+              This is the admin panel, log in to access to dashboard.
             </Typography>
 
             {/* <Stack direction="row" spacing={2}>

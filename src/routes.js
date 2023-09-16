@@ -7,27 +7,29 @@ import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
+import TagsPage from './pages/TagsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const isAuthenticated = !! localStorage.getItem('token')
+
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'tags', element: <ProductsPage /> },
+        { path: 'tags', element: <TagsPage /> },
         { path: 'articles', element: <BlogPage /> },
       ],
     },
     {
       path: 'login',
-      element: <LoginPage />,
+      element: isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />,
     },
     {
       element: <SimpleLayout />,

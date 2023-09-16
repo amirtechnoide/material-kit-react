@@ -14,6 +14,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+import { logout } from '../../../sections/auth/login/utils';
 
 // ----------------------------------------------------------------------
 // const logoutLogo = '/assets/icons/ic_flag_en.svg';
@@ -97,7 +98,7 @@ export default function Nav({ openNav, onCloseNav }) {
             </Typography>
           </Box> */}
 
-          <Button variant="contained">
+          <Button variant="contained" onClick={ logout }>
             Logout
           </Button>
         </Stack>
