@@ -20,8 +20,10 @@ export default function App() {
         <ThemeProvider>
           <ScrollToTop />
           <StyledChart />
-          <QueryClientProvider client={ queryClient }>
+          <QueryClientProvider client={queryClient}>
             <Router />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+
           </QueryClientProvider>
         </ThemeProvider>
       </BrowserRouter>

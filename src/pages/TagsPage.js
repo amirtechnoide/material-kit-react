@@ -7,11 +7,17 @@ import Iconify from '../components/iconify';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../modules/@dashboard/products/components/index';
 // mock
 import PRODUCTS from '../_mock/products';
+import ModalFormTags from '../modules/@dashboard/tags/components/ModalFormTags';
+import AllTags from '../modules/@dashboard/tags/components/AllTags';
+import useAllTags from '../modules/@dashboard/tags/hooks/useAllTags';
 
 // ----------------------------------------------------------------------
 
 export default function TagsPage() {
   const [openFilter, setOpenFilter] = useState(false);
+  const tagsData = useAllTags()
+  const { isLoading, data, refetch } = tagsData
+  console.log(data?.data);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -20,7 +26,13 @@ export default function TagsPage() {
   const handleCloseFilter = () => {
     setOpenFilter(false);
   };
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
+  if (isLoading) {
+    return <div>Loader</div>
+  }
   return (
     <>
       <Helmet>
@@ -33,13 +45,14 @@ export default function TagsPage() {
           <Typography variant="h4" gutterBottom>
             Liste des tags
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button onClick={handleOpen} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
             Nouveau tag
           </Button>
 
         </Stack>
-        <ProductList products={PRODUCTS} />
+        <AllTags products={data?.data} />
       </Container>
+      <ModalFormTags open={open} onClose={handleClose} />
     </>
   );
 }

@@ -9,11 +9,12 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import TagsPage from './pages/TagsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import Rubriques from './pages/Rubriques';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
-  const isAuthenticated = !! localStorage.getItem('token')
+  const isAuthenticated = !!localStorage.getItem('token')
 
   const routes = useRoutes([
     {
@@ -24,6 +25,7 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'tags', element: <TagsPage /> },
+        { path: 'rubriques', element: <Rubriques /> },
         { path: 'articles', element: <BlogPage /> },
       ],
     },

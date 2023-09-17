@@ -19,7 +19,12 @@ const navConfig = [
   {
     title: 'Tags',
     path: '/dashboard/tags',
-    icon: icon('ic_cart'),
+    icon: icon('ic_tags'),
+  },
+  {
+    title: 'Rubriques',
+    path: '/dashboard/rubriques',
+    icon: icon('ic_rubriques'),
   },
   {
     title: 'users',
