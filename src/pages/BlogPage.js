@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Grid, Button, Container, Stack, Typography } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
-import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../sections/@dashboard/blog/components/index';
+import { BlogPostCard, BlogPostsSort, BlogPostsSearch } from '../modules/@dashboard/blog/components/index';
 // mock
 import POSTS from '../_mock/blog';
 

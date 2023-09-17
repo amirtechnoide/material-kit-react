@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Container, Button, Stack, Typography } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products/components/index';
+import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../modules/@dashboard/products/components/index';
 // mock
 import PRODUCTS from '../_mock/products';
 
