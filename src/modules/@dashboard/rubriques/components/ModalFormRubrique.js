@@ -14,9 +14,10 @@ import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { useFormik, ErrorMessage } from 'formik';
 import { LoadingButton } from '@mui/lab';
-import { useCreateTags } from '../hooks/useCreateTags';
-import { TagValidation } from '../utils/validation';
+import { useCreateRubrique } from '../hooks/useCreateRubrique';
+import { RubriqueValidation } from '../utils/validation';
 import useMessage from '../../../../components/message/useMessage';
+import { errorHandler } from '../../../../configs/errorConfigs';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -28,26 +29,25 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 
-export default function ModalFormTags({ open, onClose }) {
-    const { mutate, isLoading } = useCreateTags()
+export default function ModalFormRubrique({ open, onClose }) {
+    const { mutate, isLoading } = useCreateRubrique()
     const queryClient = useQueryClient()
 
     const [errorMessage, setErrorMessage] = React.useState('');
     const messenger = useMessage();
     const formik = useFormik({
         initialValues: {
-            name: '',
+            title: '',
         },
-        validationSchema: TagValidation,
+        validationSchema: RubriqueValidation,
         onSubmit: values => {
-            console.log(values)
             const datas = {
-                name: values?.name,
+                title: values?.title,
             }
 
             mutate(datas, {
                 onSuccess: () => {
-                    queryClient.invalidateQueries(["allTags"])
+                    queryClient.invalidateQueries(["allRubriques"])
 
                     messenger.showMessage({
                         message: "Operation éffectuée avec succès",
@@ -59,7 +59,7 @@ export default function ModalFormTags({ open, onClose }) {
                     // isLoading = false
                     if (isAxiosError(error)) {
                         messenger.showMessage({
-                            message: "Une erreur s'est produite:" + error.response.data.message,
+                            message: `Une erreur s'est produite:  ${error?.response?.data?.message}`,
                             type: "error",
                         });
                     }
@@ -87,10 +87,11 @@ export default function ModalFormTags({ open, onClose }) {
                     onClose={onClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
-                    fullWidth={true}
+                    // sx={{ fullWidth: "100%" }}
+                    fullWidth
                 >
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                        Creer un nouveau Tag
+                        Creer une Nouvelle Rubrique
                     </DialogTitle>
                     <IconButton
                         aria-label="close"
@@ -110,20 +111,20 @@ export default function ModalFormTags({ open, onClose }) {
                             sx={{ mt: "1rem" }}
                             size="md"
                             fullWidth
-                            name="name"
-                            label="Nom du Tag"
-                            value={formik.values.name}
-                            // error={formik.errors.name}
+                            name="title"
+                            label="Nom de la Rubrique"
+                            value={formik.values.title}
+                            // error={formik.errors.title}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             required
-                            placeholder='#'
+                            placeholder='---'
                         />
                     </DialogContent>
                     <DialogActions>
                         <LoadingButton size="large"
                             type="submit" onClick={() => formik.handleSubmit()}
-                            loading={isLoading ?? errLoading} variant="contained" >
+                            loading={isLoading} variant="contained" >
                             Creer
                         </LoadingButton>
                     </DialogActions>

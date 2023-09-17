@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
+import { isAxiosError } from 'axios';
 import { useState } from 'react';
 import useDeleteTag from '../hooks/useDeleteTag';
 import useMessage from '../../../../components/message/useMessage';
@@ -28,7 +29,7 @@ export default function AllTags({ products, ...other }) {
         // Mettez ici la logique de modification
         setSelectedTagValue(value)
         setDeleteDialogOpen(true);
-        console.log(`Modifier le tag avec l'ID : ${tagId}`);
+        // console.log(`Modifier le tag avec l'ID : ${tagId}`);
     };
 
     const handleDelete = (tagId) => {
@@ -46,9 +47,9 @@ export default function AllTags({ products, ...other }) {
         setDeleteDialogOpen(false);
     };
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         // Mettez ici la logique de suppression
-        console.log(`Supprimer le tag avec l'ID : ${selectedTagId}`);
+        // console.log("first")
         deteleTag.mutate(selectedTagId, {
             onSuccess: () => {
                 messenger.showMessage({
@@ -59,7 +60,7 @@ export default function AllTags({ products, ...other }) {
             onError: (error) => {
                 if (isAxiosError(error)) {
                     messenger.showMessage({
-                        message: "Une erreur s'est produite:" + error.response.data.message,
+                        message: "Une erreur s'est produite:",
                         type: "error",
                     });
                 }
@@ -67,8 +68,6 @@ export default function AllTags({ products, ...other }) {
                     const message = "Une erreur s'est produite"
 
                     errorHandler(error, message)
-                    setErrorMessage(message)
-
                 } else {
                     errorHandler(error)
                 }
@@ -122,7 +121,7 @@ export default function AllTags({ products, ...other }) {
                     <Button onClick={handleCloseDeleteDialog} color="primary">
                         Annuler
                     </Button>
-                    <Button variant='contained' onClick={handleConfirmDelete} color="error" autoFocus>
+                    <Button variant='contained' onClick={() => { handleConfirmDelete() }} color="error" autoFocus>
                         Supprimer
                     </Button>
                 </DialogActions>

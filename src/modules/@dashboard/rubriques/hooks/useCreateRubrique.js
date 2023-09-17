@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { TagAPI } from '../utils/api';
+import { RubriqueAPI } from '../utils/api';
 import { errorHandler } from '../../../../configs/errorConfigs';
 
-export const useCreateTags = () => {
+export const useCreateRubrique = () => {
 
     const mutation = useMutation({
-        mutationKey: 'createTags',
-        mutationFn: TagAPI,
+        mutationKey: 'createRubrique',
+        mutationFn: RubriqueAPI,
 
         // onError: (error) => {
         //     errorHandler(error)

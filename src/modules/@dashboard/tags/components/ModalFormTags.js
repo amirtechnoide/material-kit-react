@@ -87,7 +87,7 @@ export default function ModalFormTags({ open, onClose }) {
                     onClose={onClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
-                    fullWidth={true}
+                    fullWidth
                 >
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                         Creer un nouveau Tag

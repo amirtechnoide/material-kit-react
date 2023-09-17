@@ -10,6 +10,7 @@ import PRODUCTS from '../_mock/products';
 import ModalFormTags from '../modules/@dashboard/tags/components/ModalFormTags';
 import AllTags from '../modules/@dashboard/tags/components/AllTags';
 import useAllTags from '../modules/@dashboard/tags/hooks/useAllTags';
+import LinearLoader from '../components/loader/LinearLoader';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +18,7 @@ export default function TagsPage() {
   const [openFilter, setOpenFilter] = useState(false);
   const tagsData = useAllTags()
   const { isLoading, data, refetch } = tagsData
-  console.log(data?.data);
+  // console.log(data?.data);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -30,9 +31,6 @@ export default function TagsPage() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  if (isLoading) {
-    return <div>Loader</div>
-  }
   return (
     <>
       <Helmet>
@@ -50,7 +48,9 @@ export default function TagsPage() {
           </Button>
 
         </Stack>
-        <AllTags products={data?.data} />
+        {isLoading ? <LinearLoader /> :
+          <AllTags products={data?.data} />
+        }
       </Container>
       <ModalFormTags open={open} onClose={handleClose} />
     </>

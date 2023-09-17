@@ -1,8 +1,8 @@
 import * as Yup from 'yup'
 
-const TagValidation = Yup.object().shape({
-    name: Yup.string().min(2, "Minimum 2 caractères").required('Enter Tag name'),
+const RubriqueValidation = Yup.object().shape({
+    title: Yup.string().min(2, "Minimum 2 caractères").required('Enter a category name'),
 })
 
 
-export { TagValidation }
+export { RubriqueValidation }

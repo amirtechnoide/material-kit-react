@@ -4,7 +4,7 @@ import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentT
 import ClearIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import { useState } from 'react';
-import useDeleteTag from '../hooks/useDeleteTag';
+// import useDeleteTag from '../hooks/useDeleteTag';
 import useMessage from '../../../../components/message/useMessage';
 import { errorHandler } from '../../../../configs/errorConfigs';
 
@@ -12,18 +12,18 @@ import { errorHandler } from '../../../../configs/errorConfigs';
 
 // ----------------------------------------------------------------------
 
-AllTags.propTypes = {
+AllRubrique.propTypes = {
     products: PropTypes.array.isRequired,
 };
 
-export default function AllTags({ products, ...other }) {
+export default function AllRubrique({ products, ...other }) {
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedTagId, setSelectedTagId] = useState(null);
     const [selectedTagValue, setSelectedTagValue] = useState("");
     const messenger = useMessage();
 
-    const deteleTag = useDeleteTag(selectedTagId)
+    // const deteleTag = useDeleteTag(selectedTagId)
     const handleEdit = (tagId, value) => {
         // Mettez ici la logique de modification
         setSelectedTagValue(value)
@@ -79,22 +79,22 @@ export default function AllTags({ products, ...other }) {
     return (
         <Grid container spacing={3} {...other}>
             {products.map((tag) => (
-                <Grid key={tag.tag_id} item xs={12} sm={6} md={3}>
+                <Grid key={tag.rubrique_id} item xs={12} sm={6} md={3}>
                     <Card>
                         <Stack spacing={2} sx={{ p: 2 }}>
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                 <Link color="inherit" underline="hover">
                                     <Typography variant="subtitle2" noWrap>
-                                        Nom: # {tag.name}
+                                        Titre: {tag.rubrique_title}
                                     </Typography>
                                 </Link>
                                 <Box>
-                                    {/* <IconButton onClick={() => handleEdit(tag.tag_id)} size='small' aria-label="delete">
+                                    {/* <IconButton onClick={() => handleEdit(tag.rubrique_id)} size='small' aria-label="delete">
                                         <EditIcon fontSize='small' color='inherit' />
                                     </IconButton> */}
-                                    <IconButton onClick={() => handleDelete(tag.tag_id)} size='small' aria-label="delete">
+                                    {/* <IconButton onClick={() => handleDelete(tag.rubrique_id)} size='small' aria-label="delete">
                                         <ClearIcon fontSize='small' color='error' />
-                                    </IconButton>
+                                    </IconButton> */}
                                 </Box>
                             </Stack>
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -127,28 +127,6 @@ export default function AllTags({ products, ...other }) {
                     </Button>
                 </DialogActions>
             </Dialog>
-
-            {/* <Dialog
-                open={isEditDialogOpen}
-                onClose={handleCloseEditDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">Confirmer la suppression</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Êtes-vous sûr de vouloir supprimer ce tag ?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseEditDialog} color="primary">
-                        Annuler
-                    </Button>
-                    <Button variant='contained' onClick={handleConfirmDelete} color="error" autoFocus>
-                        Supprimer
-                    </Button>
-                </DialogActions>
-            </Dialog> */}
         </Grid>
     );
 }

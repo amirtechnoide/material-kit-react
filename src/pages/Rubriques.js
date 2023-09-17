@@ -6,19 +6,19 @@ import { Container, Button, Stack, Typography } from '@mui/material';
 import Iconify from '../components/iconify';
 import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../modules/@dashboard/products/components/index';
 // mock
-import PRODUCTS from '../_mock/products';
-import ModalFormTags from '../modules/@dashboard/tags/components/ModalFormTags';
-import AllTags from '../modules/@dashboard/tags/components/AllTags';
-import useAllTags from '../modules/@dashboard/tags/hooks/useAllTags';
+
+import AllRubrique from '../modules/@dashboard/rubriques/components/AllRubrique';
+import useAllRubriques from '../modules/@dashboard/rubriques/hooks/useAllRubriques';
+import ModalFormRubrique from '../modules/@dashboard/rubriques/components/ModalFormRubrique';
+import LinearLoader from '../components/loader/LinearLoader';
 
 // ----------------------------------------------------------------------
 
 export default function Rubriques() {
     const [openFilter, setOpenFilter] = useState(false);
-    const tagsData = useAllTags()
-    const { isLoading, data, refetch } = tagsData
-    console.log(data?.data);
-
+    const rubriqueData = useAllRubriques()
+    const { isLoading, data, refetch } = rubriqueData
+    console.log(data)
     const handleOpenFilter = () => {
         setOpenFilter(true);
     };
@@ -30,15 +30,11 @@ export default function Rubriques() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    if (isLoading) {
-        return <div>Loader</div>
-    }
+    // if (isLoading) {
+    //     return <LinearLoader />
+    // }
     return (
         <>
-            <Helmet>
-                <title> Dashboard: Products | Minimal UI </title>
-            </Helmet>
-
             <Container>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
 
@@ -50,9 +46,11 @@ export default function Rubriques() {
                     </Button>
 
                 </Stack>
-                <AllTags products={data?.data} />
+                {isLoading ? <LinearLoader /> :
+                    <AllRubrique products={data?.data} />
+                }
             </Container>
-            <ModalFormTags open={open} onClose={handleClose} />
+            <ModalFormRubrique open={open} onClose={handleClose} />
         </>
     );
 }
