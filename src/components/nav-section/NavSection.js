@@ -38,7 +38,7 @@ function NavItem({ item }) {
       to={path}
       sx={{
         '&.active': {
-          color: 'text.primary',
+          color: 'text.main',
           bgcolor: 'action.selected',
           fontWeight: 'fontWeightBold',
         },
