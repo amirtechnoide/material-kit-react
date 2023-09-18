@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -10,29 +9,19 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQueryClient } from 'react-query';
 import { isAxiosError } from 'axios';
 import { Alert, TextField } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import { useFormik, ErrorMessage } from 'formik';
+import { useFormik } from 'formik';
 import { LoadingButton } from '@mui/lab';
 import { useCreateTags } from '../hooks/useCreateTags';
 import { TagValidation } from '../utils/validation';
 import useMessage from '../../../../components/message/useMessage';
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
-}));
-
+import { errorHandler } from '../../../../configs/errorConfigs';
 
 export default function ModalFormTags({ open, onClose }) {
-    const { mutate, isLoading } = useCreateTags()
+    const { mutate } = useCreateTags()
     const queryClient = useQueryClient()
-
-    const [errorMessage, setErrorMessage] = React.useState('');
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const messenger = useMessage();
     const formik = useFormik({
         initialValues: {
@@ -40,7 +29,8 @@ export default function ModalFormTags({ open, onClose }) {
         },
         validationSchema: TagValidation,
         onSubmit: values => {
-            console.log(values)
+            setLoading(true)
+
             const datas = {
                 name: values?.name,
             }
@@ -50,18 +40,23 @@ export default function ModalFormTags({ open, onClose }) {
                     queryClient.invalidateQueries(["allTags"])
 
                     messenger.showMessage({
-                        message: "Operation éffectuée avec succès",
+                        message: `Tag #${ datas.name } crée avec succès`,
                         type: "success",
                     });
+                    setLoading(false)
                     onClose();
+                    formik.resetForm()
                 },
                 onError: (error) => {
                     // isLoading = false
                     if (isAxiosError(error)) {
+                        const message = `Une erreur s'est produite: ${error.response.data.message}`
+
                         messenger.showMessage({
-                            message: "Une erreur s'est produite:" + error.response.data.message,
+                            message,
                             type: "error",
                         });
+                        setErrorMessage(message)
                     }
                     if (error?.response?.data?.statusCode === 401 || error?.response?.data?.status === 401) {
                         const message = "Une erreur s'est produite"
@@ -72,6 +67,7 @@ export default function ModalFormTags({ open, onClose }) {
                     } else {
                         errorHandler(error)
                     }
+                    setLoading(false)
                 }
             })
         }
@@ -80,15 +76,13 @@ export default function ModalFormTags({ open, onClose }) {
 
     return (
         <div>
-            <form onSubmit={formik.handleSubmit} >
-                {/* {errorMessage && <Alert sx={{ mb: 4 }} severity="error">{errorMessage}</Alert>} */}
-
-                <Dialog
-                    onClose={onClose}
-                    aria-labelledby="customized-dialog-title"
-                    open={open}
-                    fullWidth
-                >
+            <Dialog
+                onClose={onClose}
+                aria-labelledby="customized-dialog-title"
+                open={open}
+                fullWidth
+            >
+                <form onSubmit={ formik.handleSubmit }>
                     <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
                         Creer un nouveau Tag
                     </DialogTitle>
@@ -105,6 +99,7 @@ export default function ModalFormTags({ open, onClose }) {
                         <CloseIcon />
                     </IconButton>
                     <DialogContent dividers>
+                        {errorMessage && <Alert sx={{ mb: 1 }} severity="error">{errorMessage}</Alert>}
                         <TextField
                             type="text"
                             sx={{ mt: "1rem" }}
@@ -121,14 +116,16 @@ export default function ModalFormTags({ open, onClose }) {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <LoadingButton size="large"
+                        <LoadingButton 
+                            size="large"
                             type="submit" onClick={() => formik.handleSubmit()}
-                            loading={isLoading ?? errLoading} variant="contained" >
+                            loading={ loading } variant="contained"
+                        >
                             Creer
                         </LoadingButton>
                     </DialogActions>
-                </Dialog>
-            </form>
+                </form>
+            </Dialog>
         </div >
     );
 }

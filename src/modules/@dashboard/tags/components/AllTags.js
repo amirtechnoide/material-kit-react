@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Link, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import EditIcon from '@mui/icons-material/Edit';
 import { isAxiosError } from 'axios';
+import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
 import useDeleteTag from '../hooks/useDeleteTag';
 import useMessage from '../../../../components/message/useMessage';
@@ -19,61 +19,60 @@ AllTags.propTypes = {
 
 export default function AllTags({ products, ...other }) {
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [isEditDialogOpen, setEditDialogOpen] = useState(false);
-    const [selectedTagId, setSelectedTagId] = useState(null);
-    const [selectedTagValue, setSelectedTagValue] = useState("");
+    const [selectedTag, setSelectedTag] = useState(null);
     const messenger = useMessage();
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const deteleTag = useDeleteTag(selectedTagId)
-    const handleEdit = (tagId, value) => {
-        // Mettez ici la logique de modification
-        setSelectedTagValue(value)
-        setDeleteDialogOpen(true);
-        // console.log(`Modifier le tag avec l'ID : ${tagId}`);
-    };
+    const deteleTag = useDeleteTag(selectedTag?.tag_id)
 
-    const handleDelete = (tagId) => {
-        setSelectedTagId(tagId);
+    const handleDelete = (tag) => {
+        setSelectedTag(tag);
         setDeleteDialogOpen(true);
     };
 
     const handleCloseDeleteDialog = () => {
-        setSelectedTagId(null);
-        setDeleteDialogOpen(false);
-    };
-
-    const handleCloseEditDialog = (value) => {
-        selectedTagValue(value);
-        setDeleteDialogOpen(false);
+        setSelectedTag(null)
+        setErrorMessage('')
+        setLoading(false)
+        setDeleteDialogOpen(false)
     };
 
     const handleConfirmDelete = async () => {
         // Mettez ici la logique de suppression
         // console.log("first")
-        deteleTag.mutate(selectedTagId, {
+        setLoading(true)
+        deteleTag.mutate(selectedTag?.tag_id, {
             onSuccess: () => {
                 messenger.showMessage({
-                    message: "Operation éffectuée avec succès",
+                    message: `Tag #${ selectedTag.name } supprimé avec succès`,
                     type: "success",
                 });
+                handleCloseDeleteDialog()
             },
             onError: (error) => {
                 if (isAxiosError(error)) {
+                    const message = `Une erreur s'est produite: ${error.response.data.message}`
+
                     messenger.showMessage({
-                        message: "Une erreur s'est produite:",
+                        message,
                         type: "error",
                     });
+                    setErrorMessage(message)
                 }
                 if (error?.response?.data?.statusCode === 401 || error?.response?.data?.status === 401) {
                     const message = "Une erreur s'est produite"
 
                     errorHandler(error, message)
+                    setErrorMessage(message)
+
                 } else {
                     errorHandler(error)
                 }
+
+                setLoading(false)
             },
         })
-        handleCloseDeleteDialog();
     };
     return (
         <Grid container spacing={3} {...other}>
@@ -84,14 +83,14 @@ export default function AllTags({ products, ...other }) {
                             <Stack direction="row" alignItems="center" justifyContent="space-between">
                                 <Link color="inherit" underline="hover">
                                     <Typography variant="subtitle2" noWrap>
-                                        Nom: # {tag.name}
+                                        # {tag.name}
                                     </Typography>
                                 </Link>
                                 <Box>
                                     {/* <IconButton onClick={() => handleEdit(tag.tag_id)} size='small' aria-label="delete">
                                         <EditIcon fontSize='small' color='inherit' />
                                     </IconButton> */}
-                                    <IconButton onClick={() => handleDelete(tag.tag_id)} size='small' aria-label="delete">
+                                    <IconButton onClick={() => handleDelete(tag)} size='small' aria-label="delete">
                                         <ClearIcon fontSize='small' color='error' />
                                     </IconButton>
                                 </Box>
@@ -111,20 +110,28 @@ export default function AllTags({ products, ...other }) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">Confirmer la suppression</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Êtes-vous sûr de vouloir supprimer ce tag ?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDeleteDialog} color="primary">
-                        Annuler
-                    </Button>
-                    <Button variant='contained' onClick={() => { handleConfirmDelete() }} color="error" autoFocus>
-                        Supprimer
-                    </Button>
-                </DialogActions>
+                <form onSubmit={() => handleConfirmDelete() }>
+                    <DialogTitle id="alert-dialog-title">Confirmer la suppression</DialogTitle>
+                    <DialogContent>
+                        {errorMessage && <Alert sx={{ mb: 1 }} severity="error">{errorMessage}</Alert>}
+                        <DialogContentText id="alert-dialog-description">
+                            Êtes-vous sûr de vouloir supprimer le tag <span style={{ fontWeight: 'bold' }}>#{ selectedTag?.name }</span> ?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDeleteDialog} color="primary">
+                            Annuler
+                        </Button>
+                        <LoadingButton 
+                            variant='contained' 
+                            onClick={() => { handleConfirmDelete() }} 
+                            color="error" 
+                            loading={ loading }
+                        >
+                            Supprimer
+                        </LoadingButton>
+                    </DialogActions>
+                </form>
             </Dialog>
 
             {/* <Dialog
