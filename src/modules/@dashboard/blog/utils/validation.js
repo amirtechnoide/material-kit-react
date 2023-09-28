@@ -1,0 +1,38 @@
+import { toast } from 'react-toastify'
+import * as Yup from 'yup'
+
+const blogValidation = Yup.object().shape({
+    title: Yup.string().required('Entrez un titre'),
+    type: Yup.string().required('Sélectionnez un type'),
+    rubrique: Yup.object().required('Sélectionnez une rubrique'),
+    tag: Yup.object().required('Sélectionnez un tag'),
+    link: Yup.string().required("Entrez l'URL du média"),
+    description: Yup.string().required("Entrez une description de l'article"),
+})
+
+const youtubeVideoRegex = /(?:\?v=|&v=|\/embed\/|\.be\/)([\w\d_-]+)/
+
+const checkUpladedFile = (file) => {
+    const extension = file?.type?.split('/')[0]
+    let validFile = true
+    
+    if (extension !== 'image') {
+        validFile = false
+        toast.error('Veuillez choisir un fichier image !', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 5000
+        })
+    }
+
+    if (Math.round(file.size / 100) / 10 > 3120) {
+        validFile = false
+        toast.error('Votre fichier ne doit pas peser plus de 3 Mo !', {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 5000
+        });
+    }
+
+    return validFile
+}
+
+export { youtubeVideoRegex, blogValidation, checkUpladedFile }
