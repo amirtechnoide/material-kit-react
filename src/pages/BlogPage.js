@@ -60,7 +60,11 @@ export default function BlogPage() {
               />
           ))}
         </Grid>
-        <ModalFormblog refetch={ refetch } open={open} onClose={handleClose} />
+        <ModalFormblog 
+          refetch={ refetch } 
+          open={open} 
+          onClose={handleClose} 
+        />
       </Container>
     </>
   );
