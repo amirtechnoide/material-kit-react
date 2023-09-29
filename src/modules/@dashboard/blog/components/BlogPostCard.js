@@ -43,11 +43,10 @@ const StyledCover = styled('img')({
 
 BlogPostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number,
 };
 
 export default function BlogPostCard({ post }) {
-  const { title, view, comment, share, createdAt } = post;
+  const { title, view, comment, share } = post;
 
   const POST_INFO = [
     { number: comment, icon: 'eva:message-circle-fill' },
@@ -64,7 +63,7 @@ export default function BlogPostCard({ post }) {
 
         <CardContent>
           <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {fDate(createdAt)}
+            {fDate(post?.created_at)}
           </Typography>
 
           <StyledTitle

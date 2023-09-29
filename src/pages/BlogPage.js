@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 // @mui
 import { Grid, Button, Container, Stack, Typography, Alert } from '@mui/material';
 import useAllArticles from '../modules/@dashboard/blog/hooks/useAllArticles';
@@ -7,18 +7,12 @@ import useAllArticles from '../modules/@dashboard/blog/hooks/useAllArticles';
 import Iconify from '../components/iconify';
 import { BlogPostCard } from '../modules/@dashboard/blog/components/index';
 // mock
-import ModalFormblog from '../modules/@dashboard/blog/components/ModalFormBlog';
 import SkeletonBlog from '../modules/@dashboard/blog/components/SkeletonBlog';
 // ----------------------------------------------------------------------
 
 export default function BlogPage() {
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const { isLoading, data, refetch } = useAllArticles()
-  console.log(data)
+  const { isLoading, data } = useAllArticles()
 
   return (
     <>
@@ -29,11 +23,13 @@ export default function BlogPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Liste des Articles
+            Liste des articles
           </Typography>
-          <Button onClick={handleOpen} variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Nouvel Article
-          </Button>
+          <Link to='/dashboard/articles/addArticle'>
+            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+              Nouvel Article
+            </Button>
+          </Link>
         </Stack>
 
         <Grid container spacing={3}>
@@ -61,11 +57,6 @@ export default function BlogPage() {
             />
           ))}
         </Grid>
-        <ModalFormblog
-          refetch={refetch}
-          open={open}
-          onClose={handleClose}
-        />
       </Container>
     </>
   );

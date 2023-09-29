@@ -7,7 +7,6 @@ export default function SkeletonBlog() {
     <Grid container spacing={5}>
         {
             [1,2,3,4].map((item) => (
-
                 <Grid item key={item} xs={12} sm={6} md={3}>
                     <Skeleton
                         variant="rectangular"
