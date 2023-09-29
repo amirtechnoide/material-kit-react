@@ -27,9 +27,9 @@ const navConfig = [
     icon: icon('ic_rubriques'),
   },
   {
-    title: 'users',
-    path: '/dashboard/user',
-    icon: icon('ic_user'),
+    title: 'Replays',
+    path: '/dashboard/replays',
+    icon: icon('ic_replays'),
   },
   // {
   //   title: 'Not found',
