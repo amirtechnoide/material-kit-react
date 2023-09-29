@@ -34,7 +34,7 @@ export default function TagsPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Products | Minimal UI </title>
+        <title> Admin Tags </title>
       </Helmet>
 
       <Container>
