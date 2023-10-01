@@ -60,7 +60,6 @@ export default function BlogCardVideo({ post }) {
         <StyledCardMedia>
           <StyledCover alt={title} src={post?.cover_image} />
         </StyledCardMedia>
-
         <CardContent>
           <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
             {fDate(post?.created_at)}

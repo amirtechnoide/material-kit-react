@@ -26,11 +26,7 @@ export default function Replays() {
           <Typography variant="h4" gutterBottom>
             Liste des Replays
           </Typography>
-          <Link to="/dashboard/articles/addArticle">
-            <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-              Nouveau Replay
-            </Button>
-          </Link>
+
         </Stack>
 
         <Grid container spacing={3}>
