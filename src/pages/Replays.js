@@ -5,15 +5,16 @@ import { Grid, Button, Container, Stack, Typography, Alert } from '@mui/material
 import useAllArticles from '../modules/@dashboard/blog/hooks/useAllArticles';
 // components
 import Iconify from '../components/iconify';
-import { BlogPostCard } from '../modules/@dashboard/blog/components/index';
 // mock
 import SkeletonBlog from '../modules/@dashboard/blog/components/SkeletonBlog';
+import BlogCardVideo from '../modules/@dashboard/blog/components/BlogCardVideo';
 // ----------------------------------------------------------------------
 
-export default function BlogPage() {
-
-  const { isLoading, data } = useAllArticles()
-
+export default function Replays() {
+  const { isLoading, data } = useAllArticles();
+  if (isLoading) {
+    return <SkeletonBlog />;
+  }
   return (
     <>
       <Helmet>
@@ -23,32 +24,19 @@ export default function BlogPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Liste des articles
+            Liste des Replays
           </Typography>
-          <Link to='/dashboard/articles/addArticle'>
+          <Link to="/dashboard/articles/addArticle">
             <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-              Nouvel Article
+              Nouveau Replay
             </Button>
           </Link>
         </Stack>
 
         <Grid container spacing={3}>
-          {
-            isLoading ?
-              <SkeletonBlog />
-              :
-              data?.items?.length > 0 ?
-                data?.items?.map((post, index) => (
-                  post?.media?.media_type === 'image' &&
-                  <BlogPostCard
-                    key={post.id}
-                    post={post}
-                    index={index}
-                  />
-                ))
-                :
-                <Alert severity="error">Aucun article trouvé !</Alert>
-          }
+          {data?.items?.map(
+            (post) => post?.media?.media_type === 'video' && <BlogCardVideo key={post?.id} post={post} />
+          )}
         </Grid>
       </Container>
     </>

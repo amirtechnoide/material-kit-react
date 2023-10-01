@@ -48,7 +48,8 @@ export default function AddArticlePage() {
             rubrique: null,
             link: '',
             tag: null,
-            description: ''
+            description: '',
+            cover_image:""
         },
         validationSchema: blogValidation,
         onSubmit: values => {

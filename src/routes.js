@@ -11,6 +11,7 @@ import TagsPage from './pages/TagsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Rubriques from './pages/Rubriques';
 import AddArticlePage from './pages/AddArticlePage';
+import Replays from './pages/Replays';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'rubriques', element: <Rubriques /> },
         { path: 'articles/addArticle', element: <AddArticlePage /> },
         { path: 'articles', element: <BlogPage /> },
+        { path: 'replays', element: <Replays /> },
       ],
     },
     {

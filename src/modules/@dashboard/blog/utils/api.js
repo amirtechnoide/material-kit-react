@@ -16,7 +16,7 @@ const DeleteTagAPI = async (id) => {
 }
 
 const AllArticleAPI = async () => {
-    const response = await axios.get('/articles/list')
+    const response = await axios.get('/articles/list?page=1&limit=100')
     return response?.data
 }
 
