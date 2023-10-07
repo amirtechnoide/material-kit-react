@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Typography, CardContent } from '@mui/material';
+import { Box, Link, Card, Grid, Typography, CardContent, IconButton } from '@mui/material';
 // utils
 import { fDate } from '../../../../utils/formatTime';
 import { fShortenNumber } from '../../../../utils/formatNumber';
@@ -74,19 +74,30 @@ export default function BlogCardVideo({ post }) {
           </StyledTitle>
 
           <StyledInfo>
-            {POST_INFO.map((info, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  ml: index === 0 ? 0 : 1.5,
-                }}
-              >
-                <Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />
-                <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-              </Box>
-            ))}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                ml: 1.5,
+              }}
+
+            >
+              <Iconify icon="eva:eye-fill" sx={{ width: 24, height: 16, mr: 0.5 }} />
+              <Typography variant="caption">Voir</Typography>
+            </Box>
+            <Box
+              sx={{
+                width: "100%",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                ml: 1.5,
+              }}
+
+            >
+              <Iconify color="red" icon="eva:trash-fill" sx={{ width: 16, height: 16, mr: 0.5 }} />
+              {/* <Typography variant="caption" color="red">Supprimer</Typography> */}
+            </Box>
           </StyledInfo>
         </CardContent>
       </Card>

@@ -31,6 +31,7 @@ export default function Router() {
         { path: 'articles/addArticle', element: <AddArticlePage /> },
         { path: 'articles', element: <BlogPage /> },
         { path: 'replays', element: <Replays /> },
+        { path: 'replays/:id', element: <replaysDetail /> },
       ],
     },
     {

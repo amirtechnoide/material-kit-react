@@ -31,7 +31,8 @@ export default function Replays() {
 
         <Grid container spacing={3}>
           {data?.items?.map(
-            (post) => post?.media?.media_type === 'video' && <BlogCardVideo key={post?.id} post={post} />
+            (post) => post?.media?.media_type === 'video' &&
+              <BlogCardVideo post={post} />
           )}
         </Grid>
       </Container>
