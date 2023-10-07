@@ -1,9 +1,9 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import * as React from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { isAxiosError } from 'axios';
 import YouTube from 'react-youtube';
-import { Alert, Autocomplete, Box, Container, Grid, Stack, TextField, Typography } from '@mui/material';
+import { isAxiosError } from 'axios';
+import { Alert, Autocomplete, Box, Container, Grid, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { LoadingButton } from '@mui/lab';
@@ -15,18 +15,19 @@ import useAllRubriques from '../modules/@dashboard/rubriques/hooks/useAllRubriqu
 import TextWysiwyg from '../components/TextWysiwyg';
 import { useUploadImage } from '../modules/@dashboard/blog/hooks/useUploadImage';
 import useAllTags from '../modules/@dashboard/tags/hooks/useAllTags';
-import { useCreatePost } from '../modules/@dashboard/blog/hooks/useCreatePost';
+import useOneArticle from '../modules/@dashboard/blog/hooks/useOneArticle';
+import { useEditArticle } from '../modules/@dashboard/blog/hooks/useEditArticle';
 
-export default function AddArticlePage() {
-    const { mutate, isLoading } = useCreatePost()
+export default function EditArticlePage() {
+    const { id } = useParams()
+    const { mutate, isLoading } = useEditArticle()
     const { mutate: mutateFile, data: urlDataImage, isLoading: uploading } = useUploadImage()
     const [imageNotFound, setImageNotFound] = useState(false);
     const { data: tags } = useAllTags()
     const { data: rubriques } = useAllRubriques()
     const [errorMessage, setErrorMessage] = useState('');
     const messenger = useMessage();
-    const navigate = useNavigate()
-    const location = useLocation();
+    const { data: article, isLoading: isLoadingArticle, refetch } = useOneArticle(id)
 
     const dataTags = tags?.data?.map(tag => ({
         id: tag?.tag_id,
@@ -62,49 +63,69 @@ export default function AddArticlePage() {
                 tag_id: values?.tag?.id,
                 media_type: values?.type,
                 media_url: values?.link ?? urlDataImage?.data?.image,
-                cover_image: values?.link ?? urlDataImage?.data?.image
-            }
-
-            if(values?.type === 'video'){
-                datas.cover_image = (values?.type === 'video' ? values?.cover_image : values?.link) ?? urlDataImage?.data?.image
-            }
-
-            if(values?.rubrique?.value === 'Evenements'){
-                datas.event = {
+                cover_image: values?.cover_image ?? urlDataImage?.data?.image,
+                event: {
                     location: values?.location,
                     date: values?.date,
                     time: values?.time
                 }
             }
 
-            mutate(datas, {
+            mutate({id, datas}, {
                 onSuccess: () => {
-                    formik.resetForm()
                     messenger.showMessage({
-                        message: `Article publié avec succès`,
+                        message: `Article modifié avec succès`,
                         type: "success",
                     });
                     setTimeout(() => {
-                        navigate('/dashboard/articles')                        
-                    }, 3000);
+                        window.location.href='/dashboard/articles'
+                    }, 2000);
                     setErrorMessage('')
                 },
                 onError: (error) => {
                     if (isAxiosError(error)) {
                         const message = `Une erreur s'est produite: ${error.response.data.message}`
-
+            
                         messenger.showMessage({
                             message,
                             type: "error",
                         });
                         setErrorMessage(message)
-                    } else {
-                        setErrorMessage(errorHandler(error))
                     }
-                }
+                    if (error?.response?.data?.statusCode === 401 || error?.response?.data?.status === 401) {
+                        const message = "Une erreur s'est produite"
+            
+                        errorHandler(error, message)
+                        setErrorMessage(message)
+            
+                    } else {
+                        errorHandler(error)
+                    }
+                },
             })
         }
     })
+
+    useEffect(() => {
+        if(article && dataRubrique && dataTags){
+            const articleValue = article?.article
+
+            formik.setFieldValue('title', articleValue?.title)
+            formik.setFieldValue('type', articleValue?.media?.media_type)
+            formik.setFieldValue('rubrique', dataRubrique.find(rubrique => rubrique?.id === articleValue?.rubrique?.rubrique_id))
+            formik.setFieldValue('link', articleValue?.media?.media_url)
+            formik.setFieldValue('tag', dataTags.find(tag => tag?.id === articleValue?.tag?.tag_id))
+            formik.setFieldValue('description', articleValue?.description)
+            formik.setFieldValue('cover_image', articleValue?.cover_image)
+            formik.setFieldValue('location', articleValue?.event_details?.location)
+            formik.setFieldValue('date', articleValue?.event_details?.date)
+            formik.setFieldValue('time', articleValue?.event_details?.time)
+        }
+    }, [tags, rubriques, isLoadingArticle, id])
+
+    useEffect(() => {
+        refetch()
+    }, [])
 
     const onFileChange = (e) => {
         if (e.target.files) {
@@ -136,10 +157,10 @@ export default function AddArticlePage() {
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4" gutterBottom>
-                    Ajouter un article
+                    Modifier un article
                 </Typography>
             </Stack>
-
+            { rubriques && tags && article && !isLoadingArticle && id ?
             <form onSubmit={ formik.handleSubmit }>
                 <Box>
                     {errorMessage && <Alert sx={{ mb: 1 }} severity="error">{errorMessage}</Alert>}
@@ -170,7 +191,7 @@ export default function AddArticlePage() {
                                     helperText={formik.touched.rubrique && formik.errors.rubrique}
                                     onChange={ onRubriqueChange }
                                     onBlur={formik.handleBlur}
-                                    renderInput={(params) => <TextField {...params} label="Rubrique" />}
+                                    renderInput={(params) => <TextField value={ formik.values?.rubrique?.value } {...params} label="Rubrique" />}
                                     sx={{ background: '#fff' }}
                                 />
                                 {formik.touched.rubrique && formik.errors.rubrique && <Box sx={{ color: 'red', mb: 1, fontSize: '0.7rem' }}>{formik.errors.rubrique}</Box>}
@@ -352,11 +373,14 @@ export default function AddArticlePage() {
                             type="submit" onClick={() => formik.handleSubmit()}
                             loading={isLoading} variant="contained"
                         >
-                            Créer
+                            Modifier
                         </LoadingButton>
                     </Box>
                 </Box>
             </form>
+            :
+                <Skeleton variant="rounded" width={'100%'} height={400} />
+            }
         </Container>
     );
 }

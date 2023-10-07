@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Typography, CardContent } from '@mui/material';
+import { Link, Card, Grid, Typography, CardContent, Box } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 // utils
 import { fDate } from '../../../../utils/formatTime';
-import { fShortenNumber } from '../../../../utils/formatNumber';
-//
-import Iconify from '../../../../components/iconify';
-
 // ----------------------------------------------------------------------
 
 const StyledCardMedia = styled('div')({
@@ -45,26 +45,18 @@ BlogPostCard.propTypes = {
   post: PropTypes.object.isRequired,
 };
 
-export default function BlogPostCard({ post }) {
-  const { title, view, comment, share } = post;
-
-  const POST_INFO = [
-    { number: comment, icon: 'eva:message-circle-fill' },
-    { number: view, icon: 'eva:eye-fill' },
-    { number: share, icon: 'eva:share-fill' },
-  ];
+export default function BlogPostCard({ post, handleDelete, isReplay = false }) {
+  const { title, rubrique, media } = post;
+  const navigate= useNavigate()
 
   return (
     <Grid item xs={12} sm={6} md={3}>
       <Card sx={{ position: 'relative' }}>
         <StyledCardMedia>
-          <StyledCover alt={title} src={post?.media?.media_url} />
+          <StyledCover alt={title} src={isReplay ? post?.cover_image : media?.media_url } />
         </StyledCardMedia>
 
         <CardContent>
-          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {fDate(post?.created_at)}
-          </Typography>
 
           <StyledTitle
             color="inherit"
@@ -73,21 +65,27 @@ export default function BlogPostCard({ post }) {
           >
             {title}
           </StyledTitle>
+          
+          <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
+              { rubrique?.rubrique_title }
+            </Typography>
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
+              {fDate(post?.created_at)}
+            </Typography>
+
+          </Box>
 
           <StyledInfo>
-            {POST_INFO.map((info, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  ml: index === 0 ? 0 : 1.5,
-                }}
-              >
-                <Iconify icon={info.icon} sx={{ width: 16, height: 16, mr: 0.5 }} />
-                <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
-              </Box>
-            ))}
+
+            <IconButton aria-label="edit" size="small" onClick={() => navigate(`/dashboard/articles/editArticle/${ post?.id }`)}>
+              <EditIcon fontSize="inherit" sx={{ color: 'gray' }} />
+            </IconButton>
+
+            <IconButton aria-label="delete" size="small">
+              <DeleteIcon fontSize="inherit" color='error' onClick={ () => handleDelete(post) } />
+            </IconButton>
+          
           </StyledInfo>
         </CardContent>
       </Card>

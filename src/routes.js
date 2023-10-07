@@ -12,6 +12,7 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import Rubriques from './pages/Rubriques';
 import AddArticlePage from './pages/AddArticlePage';
 import Replays from './pages/Replays';
+import EditArticlePage from './pages/editArticlePage';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'tags', element: <TagsPage /> },
         { path: 'rubriques', element: <Rubriques /> },
         { path: 'articles/addArticle', element: <AddArticlePage /> },
+        { path: 'articles/editArticle/:id', element: <EditArticlePage /> },
         { path: 'articles', element: <BlogPage /> },
         { path: 'replays', element: <Replays /> },
       ],
