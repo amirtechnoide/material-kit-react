@@ -1,10 +1,13 @@
 import React from 'react'
+import YouTube from 'react-youtube';
 import { useParams } from 'react-router-dom'
 import { Box, Card, CardContent, IconButton, Link, Typography, styled } from '@mui/material'
+import ReactPlayer from 'react-player';
 import useOneArticle from '../hooks/useOneArticle'
 
 import { fDate } from '../../../../utils/formatTime';
 import LinearLoader from '../../../../components/loader/LinearLoader';
+import { youtubeVideoRegex } from '../utils/validation';
 
 
 const BlogPostDetail = ({ isReplay = false }) => {
@@ -12,6 +15,12 @@ const BlogPostDetail = ({ isReplay = false }) => {
   const data = useOneArticle(id)
   if (data?.data?.article?.media?.media_type === "video") {
     isReplay = true
+  }
+  const parts = data?.data?.article?.media?.media_url.split("v=");
+  let videoId
+  if (parts?.length === 2) {
+    videoId = parts[1].split("&")[0];
+    console.log(videoId); // Cela affichera "gMeM7UeXBYk"
   }
   const StyledCardMedia = styled('div')({
     position: 'relative',
@@ -32,13 +41,15 @@ const BlogPostDetail = ({ isReplay = false }) => {
     objectFit: 'cover',
     position: 'absolute',
   });
+
   if (data?.isLoading) return <LinearLoader />
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}  >
       <Card sx={{ position: 'relative', width: "80%" }}>
-        <StyledCardMedia>
-          <StyledCover sx={{ padding: 2 }} alt="cover image" src={isReplay ? data?.data?.article?.cover_image : data?.data?.article?.media?.media_url} />
-        </StyledCardMedia>
+        {isReplay ? "" :
+          <StyledCardMedia>
+            <StyledCover sx={{ padding: 2 }} alt="cover image" src={data?.data?.article?.media?.media_url} />
+          </StyledCardMedia>}
         <CardContent>
 
           <StyledTitle
@@ -48,7 +59,15 @@ const BlogPostDetail = ({ isReplay = false }) => {
           >
             {data?.data?.article?.title}
           </StyledTitle>
-          <div dangerouslySetInnerHTML={{ __html: data?.data?.article?.description }} />
+
+          {isReplay ?
+            <ReactPlayer
+              style={{ marginTop: 5 }}
+              controls={true}
+              width="100%"
+              url={data?.data?.article?.media?.media_url}
+            /> : <div dangerouslySetInnerHTML={{ __html: data?.data?.article?.description }} />}
+
           <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
             <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
               Tag: {data?.data?.article?.tag?.name}
