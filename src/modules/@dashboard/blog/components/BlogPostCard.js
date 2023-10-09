@@ -46,16 +46,19 @@ BlogPostCard.propTypes = {
 };
 
 export default function BlogPostCard({ post, handleDelete, isReplay = false }) {
-  const { title, rubrique, media } = post;
-  const navigate= useNavigate()
-
+  const { title, rubrique, media, id } = post;
+  const navigate = useNavigate()
+  console.log(id)
   return (
-    <Grid item xs={12} sm={6} md={3}>
+    <Grid sx={{
+      ":hover": {
+        cursor: "pointer"
+      }
+    }} onClick={() => navigate(`/dashboard/articles/detail/${post?.id}`)} item xs={12} sm={6} md={3}>
       <Card sx={{ position: 'relative' }}>
         <StyledCardMedia>
-          <StyledCover alt={title} src={isReplay ? post?.cover_image : media?.media_url } />
+          <StyledCover alt={title} src={isReplay ? post?.cover_image : media?.media_url} />
         </StyledCardMedia>
-
         <CardContent>
 
           <StyledTitle
@@ -65,27 +68,26 @@ export default function BlogPostCard({ post, handleDelete, isReplay = false }) {
           >
             {title}
           </StyledTitle>
-          
+
           <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', flexDirection: 'row' }}>
             <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
-              { rubrique?.rubrique_title }
+              {rubrique?.rubrique_title}
             </Typography>
             <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled' }}>
               {fDate(post?.created_at)}
             </Typography>
-
           </Box>
 
           <StyledInfo>
 
-            <IconButton aria-label="edit" size="small" onClick={() => navigate(`/dashboard/articles/editArticle/${ post?.id }`)}>
+            <IconButton aria-label="edit" size="small" onClick={() => navigate(`/dashboard/articles/editArticle/${post?.id}`)}>
               <EditIcon fontSize="inherit" sx={{ color: 'gray' }} />
             </IconButton>
 
             <IconButton aria-label="delete" size="small">
-              <DeleteIcon fontSize="inherit" color='error' onClick={ () => handleDelete(post) } />
+              <DeleteIcon fontSize="inherit" color='error' onClick={() => handleDelete(post)} />
             </IconButton>
-          
+
           </StyledInfo>
         </CardContent>
       </Card>
