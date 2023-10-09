@@ -8,7 +8,20 @@ const blogValidation = Yup.object().shape({
     tag: Yup.object().required('Sélectionnez un tag'),
     link: Yup.string().required("Entrez l'URL du média"),
     description: Yup.string().required("Entrez une description de l'article"),
-})
+    cover_image: Yup.string().when('type', (type, schema) => {
+        return type[0] === 'video' ? schema.required("Entrez une URL de couverture") : schema;
+    }),
+    location: Yup.string().when('type', (type, schema) => {
+        return type[0] === 'evenements' ? schema.required('Entrez une location') : schema;
+    }),
+    date: Yup.date().when('type', (type, schema) => {
+        return type[0] === 'evenements' ? schema.required('Sélectionnez une date') : schema;
+    }),
+    time: Yup.string().when('type', (type, schema) => {
+        return type[0] === 'evenements' ? schema.required('Entrez l\'heure') : schema;
+    }),
+});
+
 
 const youtubeVideoRegex = /(?:\?v=|&v=|\/embed\/|\.be\/)([\w\d_-]+)/
 
