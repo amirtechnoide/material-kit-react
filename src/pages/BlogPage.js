@@ -21,9 +21,9 @@ export default function BlogPage() {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const messenger = useMessage();
-  const { mutate, isLoading:isLoadingDelete } = useDeleteArticle(selectedArticle?.id)
+  const { mutate, isLoading: isLoadingDelete } = useDeleteArticle(selectedArticle?.id)
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const { isLoading, data } = useAllArticles(page, rowsPerPage)
@@ -37,13 +37,13 @@ export default function BlogPage() {
     setSelectedArticle(null)
     setErrorMessage('')
     setDeleteDialogOpen(false)
-  }; 
-  
+  };
+
   const handleConfirmDelete = async () => {
     mutate(selectedArticle?.id, {
       onSuccess: () => {
         messenger.showMessage({
-          message: `Article ${ selectedArticle.title } supprimé avec succès`,
+          message: `Article ${selectedArticle.title} supprimé avec succès`,
           type: "success",
         });
         handleCloseDeleteDialog()
@@ -53,8 +53,8 @@ export default function BlogPage() {
           const message = `Une erreur s'est produite: ${error.response.data.message}`
 
           messenger.showMessage({
-              message,
-              type: "error",
+            message,
+            type: "error",
           });
           setErrorMessage(message)
         }
@@ -104,21 +104,21 @@ export default function BlogPage() {
               :
               data?.items?.length > 0 ?
                 <>{
-                data?.items?.map((post) => (
-                  post?.media?.media_type !== 'video' &&
+                  data?.items?.map((post) => (
+                    post?.media?.media_type !== 'video' &&
                     <BlogPostCard
                       key={post.id}
                       post={post}
                       handleDelete={handleDelete}
                     />
-                ))}
+                  ))}
                 </>
                 :
                 <Alert severity="error">Aucun article trouvé !</Alert>
           }
         </Grid>
-        
-        {data?.items?.length > 0 &&     
+
+        {data?.items?.length > 0 &&
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
@@ -137,27 +137,27 @@ export default function BlogPage() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <form onSubmit={() => handleConfirmDelete() }>
-            <DialogTitle id="alert-dialog-title">Confirmer la suppression</DialogTitle>
-            <DialogContent>
-                {errorMessage && <Alert sx={{ mb: 1 }} severity="error">{errorMessage}</Alert>}
-                <DialogContentText id="alert-dialog-description">
-                    Êtes-vous sûr de vouloir supprimer l'article <span style={{ fontWeight: 'bold' }}>"{ selectedArticle?.title }"</span> ?
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCloseDeleteDialog} color="primary">
-                    Annuler
-                </Button>
-                <LoadingButton 
-                    variant='contained' 
-                    onClick={() => { handleConfirmDelete() }} 
-                    color="error" 
-                    loading={ isLoadingDelete }
-                >
-                    Supprimer
-                </LoadingButton>
-            </DialogActions>
+        <form onSubmit={() => handleConfirmDelete()}>
+          <DialogTitle id="alert-dialog-title">Confirmer la suppression</DialogTitle>
+          <DialogContent>
+            {errorMessage && <Alert sx={{ mb: 1 }} severity="error">{errorMessage}</Alert>}
+            <DialogContentText id="alert-dialog-description">
+              Êtes-vous sûr de vouloir supprimer l'article <span style={{ fontWeight: 'bold' }}>"{selectedArticle?.title}"</span> ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDeleteDialog} color="primary">
+              Annuler
+            </Button>
+            <LoadingButton
+              variant='contained'
+              onClick={() => { handleConfirmDelete() }}
+              color="error"
+              loading={isLoadingDelete}
+            >
+              Supprimer
+            </LoadingButton>
+          </DialogActions>
         </form>
       </Dialog>
     </>

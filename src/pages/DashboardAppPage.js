@@ -7,11 +7,14 @@ import {
   AppWebsiteVisits,
   AppWidgetSummary,
 } from '../modules/@dashboard/app/components/index';
+import useStats from '../modules/@dashboard/app/components/hooks/useStats';
+import LinearLoader from '../components/loader/LinearLoader';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
-
+  const data = useStats()
+  console.log(data?.data?.data?.articles)
   return (
     <>
       <Helmet>
@@ -22,65 +25,65 @@ export default function DashboardAppPage() {
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
         </Typography>
+        {data?.isLoading ? <LinearLoader /> :
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Articles" total={data?.data?.data?.articles} icon={'ant-design:font-colors'} />
+            </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Articles" total={714000} icon={'ant-design:font-colors'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Candidats" total={data?.data?.data?.candidat} color="info" icon={'ant-design:user'} />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="All Users" total={1352831} color="info" icon={'ant-design:user'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Evenements" total={data?.data?.data?.evenements} color="warning" icon={'ant-design:file-text'} />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Rubriques" total={1723315} color="warning" icon={'ant-design:file-text'} />
-          </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <AppWidgetSummary title="Replays" total={data?.data?.data?.replays} color="error" icon={'ant-design:tags'} />
+            </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Tags" total={234} color="error" icon={'ant-design:tags'} />
-          </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <AppWebsiteVisits
+                title="Articles-Rubriques-Tags"
+                subheader="(+43%) than last month"
+                chartLabels={[
+                  '01/01/2023',
+                  '02/01/2023',
+                  '03/01/2023',
+                  '04/01/2023',
+                  '05/01/2023',
+                  '06/01/2023',
+                  '07/01/2023',
+                  '08/01/2023',
+                  '09/01/2023',
+                  '10/01/2023',
+                  '11/01/2023',
+                ]}
+                chartData={[
+                  {
+                    name: 'Articles',
+                    type: 'column',
+                    fill: 'solid',
+                    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                  },
+                  {
+                    name: 'Rubriques',
+                    type: 'area',
+                    fill: 'gradient',
+                    data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                  },
+                  {
+                    name: 'Tags',
+                    type: 'line',
+                    fill: 'solid',
+                    data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                  },
+                ]}
+              />
+            </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppWebsiteVisits
-              title="Articles-Rubriques-Tags"
-              subheader="(+43%) than last month"
-              chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ]}
-              chartData={[
-                {
-                  name: 'Articles',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: 'Rubriques',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Tags',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-              ]}
-            />
-          </Grid>
-
-          {/* <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
               title="Current Visits"
               chartData={[
@@ -98,7 +101,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+            {/* <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates
               title="Conversion Rates"
               subheader="(+43%) than last year"
@@ -117,7 +120,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
             <AppCurrentSubject
               title="Current Subject"
               chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
@@ -130,7 +133,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+            {/* <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
               title="News Update"
               list={[...Array(5)].map((_, index) => ({
@@ -143,7 +146,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
               title="Order Timeline"
               list={[...Array(5)].map((_, index) => ({
@@ -161,7 +164,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
             <AppTrafficBySite
               title="Traffic by Site"
               list={[
@@ -189,7 +192,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
 
-          {/* <Grid item xs={12} md={6} lg={8}>
+            {/* <Grid item xs={12} md={6} lg={8}>
             <AppTasks
               title="Tasks"
               list={[
@@ -201,7 +204,7 @@ export default function DashboardAppPage() {
               ]}
             />
           </Grid> */}
-        </Grid>
+          </Grid>}
       </Container>
     </>
   );
